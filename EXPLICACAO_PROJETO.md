@@ -1,10 +1,10 @@
-# Explicacao do projeto CV-Tetris
+# Explicação do projeto CV-Tetris
 
 ## Ideia geral
 
-O CV-Tetris e um jogo de Tetris feito em Python. A diferenca principal e que o jogador consegue controlar as pecas usando a webcam, com ajuda de visao computacional.
+O CV-Tetris é um jogo de Tetris feito em Python. A diferença principal é que o jogador consegue controlar as peças usando a webcam, com ajuda de visão computacional.
 
-A camera captura a mao do jogador, o MediaPipe identifica os pontos da mao e o jogo transforma esses pontos em comandos. O Pygame fica responsavel pela janela, pelo tabuleiro, pelas pecas e por tudo que aparece na tela.
+A câmera captura a mão do jogador, o MediaPipe identifica os pontos da mão e o jogo transforma esses pontos em comandos. O Pygame fica responsável pela janela, pelo tabuleiro, pelas peças e por tudo que aparece na tela.
 
 ## Como o jogo funciona
 
@@ -12,25 +12,25 @@ O jogo roda em um loop principal dentro do arquivo `main.py`.
 
 Em cada rodada desse loop, o programa faz basicamente isto:
 
-1. Le a imagem da webcam.
-2. Detecta a mao com MediaPipe.
+1. Lê a imagem da webcam.
+2. Detecta a mão com MediaPipe.
 3. Interpreta o comando encontrado.
-4. Move ou gira a peca no Tetris.
-5. Atualiza a queda automatica da peca.
-6. Desenha novamente o tabuleiro, a peca, a camera e a pontuacao.
+4. Move ou gira a peça no Tetris.
+5. Atualiza a queda automática da peça.
+6. Desenha novamente o tabuleiro, a peça, a câmera e a pontuação.
 
-O Tetris em si fica separado no arquivo `tetris.py`. Isso deixa o projeto mais organizado, porque a regra do jogo nao fica misturada com a camera.
+O Tetris em si fica separado no arquivo `tetris.py`. Isso deixa o projeto mais organizado, porque a regra do jogo não fica misturada com a câmera.
 
 ## Controles
 
 ### Pela webcam
 
-- Indicador na esquerda da imagem: move a peca para a esquerda.
-- Indicador na direita da imagem: move a peca para a direita.
-- Mao aberta: rotaciona a peca.
-- Centro da imagem ou gesto nao reconhecido: nenhum comando.
+- Indicador na esquerda da imagem: move a peça para a esquerda.
+- Indicador na direita da imagem: move a peça para a direita.
+- Mão aberta: rotaciona a peça.
+- Centro da imagem ou gesto não reconhecido: nenhum comando.
 
-A imagem da webcam e espelhada. Assim, quando a mao vai para a esquerda na tela, a peca tambem vai para a esquerda, ficando mais natural para jogar.
+A imagem da webcam é espelhada. Assim, quando a mão vai para a esquerda na tela, a peça também vai para a esquerda, ficando mais natural para jogar.
 
 ### Pelo teclado
 
@@ -40,52 +40,52 @@ Os controles de teclado foram mantidos para teste:
 - Seta direita: move para direita.
 - Seta para cima: rotaciona.
 - Seta para baixo: desce uma linha.
-- Espaco: queda instantanea.
+- Espaço: queda instantânea.
 - R: reinicia depois do fim de jogo.
 
 ## Arquivos do projeto
 
 ### `main.py`
 
-E o arquivo principal. Ele abre a janela do Pygame, inicia o Tetris, inicia o controlador de gestos e mantem o loop do jogo rodando.
+É o arquivo principal. Ele abre a janela do Pygame, inicia o Tetris, inicia o controlador de gestos e mantém o loop do jogo rodando.
 
-Tambem desenha:
+Também desenha:
 
 - tabuleiro;
-- blocos ja fixados;
-- peca atual;
-- previsao de onde a peca vai cair;
-- proxima peca;
-- pontuacao;
+- blocos já fixados;
+- peça atual;
+- previsão de onde a peça vai cair;
+- próxima peça;
+- pontuação;
 - imagem da webcam.
 
 ### `tetris.py`
 
-Contem as regras do Tetris.
+Contém as regras do Tetris.
 
 Nesse arquivo ficam:
 
-- criacao das pecas;
+- criação das peças;
 - matriz do tabuleiro;
 - movimento para esquerda, direita e baixo;
-- rotacao;
-- colisao com parede, fundo e outras pecas;
-- fixacao da peca quando ela chega ao fim;
-- remocao de linhas completas;
-- pontuacao;
+- rotação;
+- colisão com parede, fundo e outras peças;
+- fixação da peça quando ela chega ao fim;
+- remoção de linhas completas;
+- pontuação;
 - fim de jogo.
 
 ### `gesture_controller.py`
 
-Cuida da parte de visao computacional.
+Cuida da parte de visão computacional.
 
-Ele abre a webcam, detecta a mao, identifica a ponta do indicador e decide qual comando mandar para o jogo.
+Ele abre a webcam, detecta a mão, identifica a ponta do indicador e decide qual comando mandar para o jogo.
 
-O arquivo tambem tem um intervalo minimo entre comandos. Isso evita que a camera leia muitos frames seguidos e acabe girando ou movendo a peca rapido demais.
+O arquivo também tem um intervalo mínimo entre comandos. Isso evita que a câmera leia muitos frames seguidos e acabe girando ou movendo a peça rápido demais.
 
 ### `config.py`
 
-Guarda as configuracoes principais:
+Guarda as configurações principais:
 
 - tamanho da tela;
 - tamanho do tabuleiro;
@@ -102,13 +102,13 @@ Lista as bibliotecas que precisam ser instaladas:
 - `opencv-python`;
 - `mediapipe`.
 
-## Previsao de queda
+## Previsão de queda
 
-O tabuleiro mostra uma ajuda visual para a peca atual.
+O tabuleiro mostra uma ajuda visual para a peça atual.
 
-As colunas ocupadas pela peca ficam levemente marcadas e a posicao final provavel aparece como uma peca translucida. Isso ajuda a jogar melhor, principalmente usando a webcam, porque o controle por gesto nao tem a mesma precisao de um teclado.
+As colunas ocupadas pela peça ficam levemente marcadas e a posição final provável aparece como uma peça translúcida. Isso ajuda a jogar melhor, principalmente usando a webcam, porque o controle por gesto não tem a mesma precisão de um teclado.
 
-## Instalacao
+## Instalação
 
 O projeto foi pensado para rodar com Python 3.12.
 
@@ -124,7 +124,7 @@ Ative o ambiente:
 .\.venv\Scripts\Activate.ps1
 ```
 
-Instale as dependencias:
+Instale as dependências:
 
 ```powershell
 pip install -r requirements.txt
@@ -136,23 +136,23 @@ Execute o jogo:
 python main.py
 ```
 
-## Observacoes importantes
+## Observações importantes
 
-Para a webcam funcionar melhor, e bom jogar em um local bem iluminado. A mao precisa aparecer inteira na camera, principalmente a ponta do dedo indicador.
+Para a webcam funcionar melhor, é bom jogar em um local bem iluminado. A mão precisa aparecer inteira na câmera, principalmente a ponta do dedo indicador.
 
-Na primeira execucao, o projeto pode baixar o arquivo `hand_landmarker.task`. Esse arquivo e o modelo usado pelo MediaPipe para detectar a mao.
+Na primeira execução, o projeto pode baixar o arquivo `hand_landmarker.task`. Esse arquivo é o modelo usado pelo MediaPipe para detectar a mão.
 
-Se a webcam nao abrir, ainda da para testar toda a logica do Tetris pelo teclado.
+Se a webcam não abrir, ainda dá para testar toda a lógica do Tetris pelo teclado.
 
-## Possiveis melhorias
+## Possíveis melhorias
 
 Algumas melhorias que podem ser feitas depois:
 
 - tela inicial;
 - tela de pausa;
 - sons;
-- ranking de pontuacao;
+- ranking de pontuação;
 - aumento de dificuldade mais elaborado;
 - modo educativo com perguntas;
 - ajustes finos nos gestos;
-- escolha da camera quando houver mais de uma.
+- escolha da câmera quando houver mais de uma.
