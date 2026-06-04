@@ -26,7 +26,7 @@ from tetris import TetrisGame
 
 
 class App:
-    """Janela do jogo, entrada do usuario e desenho da interface."""
+    """Janela do jogo, entrada do usuário e desenho da interface."""
 
     def __init__(self):
         # Inicializa o Pygame e cria a janela principal.
@@ -40,14 +40,14 @@ class App:
         self.large_font = pygame.font.SysFont("Segoe UI", 42, bold=True)
         self.small_font = pygame.font.SysFont("Segoe UI", 18)
 
-        # A logica do Tetris e o controle por gestos ficam em classes separadas.
+        # A lógica do Tetris e o controle por gestos ficam em classes separadas.
         self.game = TetrisGame()
         self.gestures = GestureController()
         self.last_drop_at = time.monotonic()
         self.last_camera_frame = None
 
     def run(self):
-        # Loop principal: le entrada, atualiza o jogo e redesenha a tela.
+        # Loop principal: lê entrada, atualiza o jogo e redesenha a tela.
         running = True
         while running:
             now = time.monotonic()
@@ -64,7 +64,7 @@ class App:
 
             self._apply_gesture_command(command)
 
-            # A queda automatica fica mais rapida conforme o nivel aumenta.
+            # A queda automática fica mais rápida conforme o nível aumenta.
             interval = max(0.15, DROP_INTERVAL - (self.game.level - 1) * 0.04)
             if now - self.last_drop_at >= interval:
                 self.game.update()
@@ -79,7 +79,7 @@ class App:
         sys.exit()
 
     def _handle_key(self, key):
-        # O teclado fica como alternativa para teste e apresentacao.
+        # O teclado fica como alternativa para teste e apresentação.
         if key == pygame.K_LEFT:
             self.game.move_left()
         elif key == pygame.K_RIGHT:
@@ -94,7 +94,7 @@ class App:
             self.game.reset()
 
     def _apply_gesture_command(self, command):
-        # Traduz os comandos vindos da webcam para a logica do Tetris.
+        # Traduz os comandos vindos da webcam para a lógica do Tetris.
         if command == "LEFT":
             self.game.move_left()
         elif command == "RIGHT":
@@ -103,7 +103,7 @@ class App:
             self.game.rotate_piece()
 
     def _draw(self, command):
-        # Ordem do desenho: fundo, tabuleiro, previsao, peca e painel.
+        # Ordem do desenho: fundo, tabuleiro, previsão, peça e painel.
         self.screen.fill(COLORS["background"])
         self._draw_board()
         self._draw_drop_preview()
@@ -132,13 +132,13 @@ class App:
             pygame.draw.line(self.screen, COLORS["grid"], (BOARD_X, y), (BOARD_X + BOARD_WIDTH, y), 1)
 
     def _draw_piece(self, piece):
-        # Desenha a peca que esta caindo no momento.
+        # Desenha a peça que está caindo no momento.
         for x, y in piece.cells:
             if y >= 0:
                 self._draw_block(BOARD_X + x * BLOCK_SIZE, BOARD_Y + y * BLOCK_SIZE, COLORS[piece.kind])
 
     def _draw_drop_preview(self):
-        # Mostra as colunas da peca e a posicao provavel onde ela vai parar.
+        # Mostra as colunas da peça e a posição provável onde ela vai parar.
         if self.game.game_over:
             return
 
@@ -167,24 +167,24 @@ class App:
         pygame.draw.rect(self.screen, (255, 255, 255), rect, 1, border_radius=3)
 
     def _draw_side_panel(self, command):
-        # Painel com pontuacao, proxima peca, comando detectado e webcam.
+        # Painel com pontuação, próxima peça, comando detectado e webcam.
         panel_rect = pygame.Rect(SIDE_PANEL_X, SIDE_PANEL_Y, SIDE_PANEL_WIDTH, BOARD_HEIGHT)
         pygame.draw.rect(self.screen, COLORS["panel"], panel_rect, border_radius=8)
 
         self._draw_text("Tetris por Gestos", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 20, self.large_font)
-        self._draw_text(f"Pontuacao: {self.game.score}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 86)
+        self._draw_text(f"Pontuação: {self.game.score}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 86)
         self._draw_text(f"Linhas: {self.game.lines}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 118)
-        self._draw_text(f"Nivel: {self.game.level}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 150)
+        self._draw_text(f"Nível: {self.game.level}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 150)
         self._draw_text(f"Comando: {command}", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 190)
 
-        self._draw_text("Proxima peca", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 238)
+        self._draw_text("Próxima peça", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 238)
         self._draw_next_piece(SIDE_PANEL_X + 28, SIDE_PANEL_Y + 274)
 
         self._draw_camera(SIDE_PANEL_X + 20, SIDE_PANEL_Y + 390)
-        self._draw_text("Teclado: setas, espaco, R", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 650, self.small_font, COLORS["muted"])
+        self._draw_text("Teclado: setas, espaço, R", SIDE_PANEL_X + 20, SIDE_PANEL_Y + 650, self.small_font, COLORS["muted"])
 
     def _draw_next_piece(self, origin_x, origin_y):
-        # Miniatura da proxima peca.
+        # Miniatura da próxima peça.
         shape = self.game.next_piece.shape
         color = COLORS[self.game.next_piece.kind]
         preview_size = 24
@@ -200,7 +200,7 @@ class App:
         pygame.draw.rect(self.screen, COLORS["board"], camera_rect)
 
         if self.last_camera_frame is None:
-            self._draw_text("Camera indisponivel", x + 24, y + 104, self.font, COLORS["muted"])
+            self._draw_text("Câmera indisponível", x + 24, y + 104, self.font, COLORS["muted"])
             return
 
         frame = cv2.resize(self.last_camera_frame, (CAMERA_WIDTH, CAMERA_HEIGHT))
@@ -218,11 +218,11 @@ class App:
         self._draw_text("Pressione R para reiniciar", BOARD_X + 58, BOARD_Y + 326, self.font)
 
     def _draw_text(self, text, x, y, font=None, color=None):
-        # Atalho para renderizar texto sem repetir o mesmo codigo em todo lugar.
+        # Atalho para renderizar texto sem repetir o mesmo código em todo lugar.
         rendered = (font or self.font).render(text, True, color or COLORS["text"])
         self.screen.blit(rendered, (x, y))
 
 
 if __name__ == "__main__":
-    # Ponto de entrada quando o arquivo e executado pelo terminal.
+    # Ponto de entrada quando o arquivo é executado pelo terminal.
     App().run()
