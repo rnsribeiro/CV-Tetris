@@ -8,18 +8,18 @@ import mediapipe as mp
 from config import COMMAND_COOLDOWNS, GLOBAL_COMMAND_COOLDOWN
 
 
-# Modelo oficial do MediaPipe usado pela API nova de deteccao de maos.
+# Modelo oficial do MediaPipe usado pela API nova de detecção de mãos.
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 MODEL_PATH = Path(__file__).with_name("hand_landmarker.task")
 
 
-# Pontos dos dedos usados para descobrir se a mao esta aberta.
+# Pontos dos dedos usados para descobrir se a mão está aberta.
 FINGER_TIPS = (8, 12, 16, 20)
 FINGER_PIPS = (6, 10, 14, 18)
 
 
 def dedos_estendidos(landmarks):
-    # Um dedo e considerado estendido quando a ponta fica acima da articulacao.
+    # Um dedo é considerado estendido quando a ponta fica acima da articulação.
     return [
         tip
         for tip, pip in zip(FINGER_TIPS, FINGER_PIPS)
@@ -28,7 +28,7 @@ def dedos_estendidos(landmarks):
 
 
 def interpretar_gesto(landmarks):
-    # Mao aberta foi escolhida para rotacionar porque e um gesto facil de manter.
+    # Mão aberta foi escolhida para rotacionar porque é um gesto fácil de manter.
     extended = dedos_estendidos(landmarks)
     extended_count = len(extended)
 
@@ -39,8 +39,8 @@ def interpretar_gesto(landmarks):
 
 
 def interpretar_movimento_horizontal(x, largura):
-    # O movimento lateral continua usando a posicao do indicador na imagem.
-    # Ficou mais confiavel do que tentar interpretar a direcao do dedo.
+    # O movimento lateral continua usando a posição do indicador na imagem.
+    # Ficou mais confiável do que tentar interpretar a direção do dedo.
     if x < largura * 0.35:
         return "LEFT"
     if x > largura * 0.65:
@@ -49,16 +49,16 @@ def interpretar_movimento_horizontal(x, largura):
 
 
 class GestureController:
-    """Cuida da webcam, da deteccao da mao e da conversao para comandos."""
+    """Cuida da webcam, da detecção da mão e da conversão para comandos."""
 
     def __init__(self, camera_index=0):
-        # Abre a camera padrao do computador.
+        # Abre a câmera padrão do computador.
         self.camera = cv2.VideoCapture(camera_index)
         self.mode = None
         self.hands = None
         self.landmarker = None
         self.drawer = None
-        # Guarda o ultimo momento em que cada comando foi aceito.
+        # Guarda o último momento em que cada comando foi aceito.
         self.last_command_at = {command: 0 for command in COMMAND_COOLDOWNS}
         self.last_any_command_at = 0
         self.current_command = "NONE"
@@ -66,7 +66,7 @@ class GestureController:
         self._initialize_detector()
 
     def _initialize_detector(self):
-        # Algumas versoes antigas do MediaPipe possuem a API solutions.
+        # Algumas versões antigas do MediaPipe possuem a API solutions.
         if hasattr(mp, "solutions"):
             self.mode = "solutions"
             self.hands = mp.solutions.hands.Hands(
@@ -77,7 +77,7 @@ class GestureController:
             self.drawer = mp.solutions.drawing_utils
             return
 
-        # Nas versoes novas, a deteccao de maos fica na API tasks.
+        # Nas versões novas, a detecção de mãos fica na API tasks.
         self.mode = "tasks"
         self._ensure_task_model()
         from mediapipe.tasks import python
@@ -93,7 +93,7 @@ class GestureController:
         self.landmarker = vision.HandLandmarker.create_from_options(options)
 
     def _ensure_task_model(self):
-        # O modelo fica salvo na pasta do projeto para nao baixar toda vez.
+        # O modelo fica salvo na pasta do projeto para não baixar toda vez.
         if MODEL_PATH.exists():
             return
         urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
@@ -123,7 +123,7 @@ class GestureController:
         return self.current_command, frame
 
     def _detect_with_solutions(self, frame, rgb_frame, width, height):
-        # Caminho usado quando o MediaPipe antigo esta instalado.
+        # Caminho usado quando o MediaPipe antigo está instalado.
         result = self.hands.process(rgb_frame)
         if result.multi_hand_landmarks:
             self.hand_detected = True
@@ -142,7 +142,7 @@ class GestureController:
         return "NONE"
 
     def _detect_with_tasks(self, frame, rgb_frame, width, height):
-        # Caminho usado pela versao atual do MediaPipe.
+        # Caminho usado pela versão atual do MediaPipe.
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
         result = self.landmarker.detect(mp_image)
         if not result.hand_landmarks:
@@ -165,7 +165,7 @@ class GestureController:
         return command
 
     def _apply_cooldown(self, command):
-        # Evita que a camera repita o mesmo comando muitas vezes por segundo.
+        # Evita que a câmera repita o mesmo comando muitas vezes por segundo.
         if command == "NONE":
             return "NONE"
 
@@ -182,13 +182,13 @@ class GestureController:
         return "NONE"
 
     def _draw_debug_overlay(self, frame, command):
-        # Textos mostrados por cima da camera para facilitar os testes.
+        # Textos mostrados por cima da câmera para facilitar os testes.
         cv2.putText(frame, f"Comando: {command}", (12, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
         cv2.putText(frame, "Indicador nas laterais: mover", (12, 56), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (230, 230, 230), 1)
-        cv2.putText(frame, "Mao aberta: girar", (12, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (230, 230, 230), 1)
+        cv2.putText(frame, "Mão aberta: girar", (12, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (230, 230, 230), 1)
 
     def release(self):
-        # Fecha camera e detector ao encerrar o jogo.
+        # Fecha câmera e detector ao encerrar o jogo.
         self.camera.release()
         if self.hands is not None:
             self.hands.close()
