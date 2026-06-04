@@ -8,13 +8,13 @@ BOARD_COLUMNS = 10
 BOARD_ROWS = 20
 BLOCK_SIZE = 32
 
-# O tabuleiro fica separado em largura, altura e posicao para facilitar o desenho.
+# O tabuleiro fica separado em largura, altura e posição para facilitar o desenho.
 BOARD_WIDTH = BOARD_COLUMNS * BLOCK_SIZE
 BOARD_HEIGHT = BOARD_ROWS * BLOCK_SIZE
 BOARD_X = 48
 BOARD_Y = 40
 
-# Painel lateral usado para pontuacao, proxima peca e camera.
+# Painel lateral usado para pontuação, próxima peça e câmera.
 SIDE_PANEL_X = BOARD_X + BOARD_WIDTH + 48
 SIDE_PANEL_Y = BOARD_Y
 SIDE_PANEL_WIDTH = SCREEN_WIDTH - SIDE_PANEL_X - 48
@@ -23,11 +23,11 @@ SIDE_PANEL_WIDTH = SCREEN_WIDTH - SIDE_PANEL_X - 48
 CAMERA_WIDTH = 320
 CAMERA_HEIGHT = 240
 
-# Tempo, em segundos, entre uma queda automatica e outra.
+# Tempo, em segundos, entre uma queda automática e outra.
 DROP_INTERVAL = 1.00
 
-# Intervalo minimo entre comandos vindos da webcam.
-# Esses valores deixam o controle menos sensivel e evitam comandos repetidos.
+# Intervalo mínimo entre comandos vindos da webcam.
+# Esses valores deixam o controle menos sensível e evitam comandos repetidos.
 COMMAND_COOLDOWNS = {
     "LEFT": 0.22,
     "RIGHT": 0.22,
@@ -37,7 +37,7 @@ COMMAND_COOLDOWNS = {
 # Pequena trava entre qualquer comando, mesmo que o gesto detectado mude.
 GLOBAL_COMMAND_COOLDOWN = 0.18
 
-# Paleta de cores usada no jogo e nas pecas.
+# Paleta de cores usada no jogo e nas peças.
 COLORS = {
     "background": (18, 20, 24),
     "panel": (32, 36, 42),
