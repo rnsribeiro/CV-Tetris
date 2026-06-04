@@ -4,8 +4,8 @@ from copy import deepcopy
 from config import BOARD_COLUMNS, BOARD_ROWS
 
 
-# Matrizes das pecas classicas do Tetris.
-# O numero 1 representa um bloco ocupado e o 0 representa espaco vazio.
+# Matrizes das peças clássicas do Tetris.
+# O número 1 representa um bloco ocupado e o 0 representa espaço vazio.
 SHAPES = {
     "I": [[1, 1, 1, 1]],
     "O": [[1, 1], [1, 1]],
@@ -18,25 +18,25 @@ SHAPES = {
 
 
 class Piece:
-    """Guarda o tipo, formato e posicao de uma peca em movimento."""
+    """Guarda o tipo, formato e posição de uma peça em movimento."""
 
     def __init__(self, kind):
         self.kind = kind
         self.shape = deepcopy(SHAPES[kind])
-        # A peca nasce centralizada no topo do tabuleiro.
+        # A peça nasce centralizada no topo do tabuleiro.
         self.x = BOARD_COLUMNS // 2 - len(self.shape[0]) // 2
         self.y = 0
 
     @property
     def cells(self):
-        # Devolve as coordenadas reais ocupadas pela peca no tabuleiro.
+        # Devolve as coordenadas reais ocupadas pela peça no tabuleiro.
         for row_index, row in enumerate(self.shape):
             for col_index, value in enumerate(row):
                 if value:
                     yield self.x + col_index, self.y + row_index
 
     def rotated_shape(self):
-        # Rotacao simples em sentido horario usando transposicao da matriz.
+        # Rotação simples em sentido horário usando transposição da matriz.
         return [list(row) for row in zip(*self.shape[::-1])]
 
 
@@ -47,7 +47,7 @@ class TetrisGame:
         self.reset()
 
     def reset(self):
-        # O tabuleiro guarda None em espacos vazios e a letra da peca em blocos fixos.
+        # O tabuleiro guarda None em espaços vazios e a letra da peça em blocos fixos.
         self.board = [[None for _ in range(BOARD_COLUMNS)] for _ in range(BOARD_ROWS)]
         self.score = 0
         self.lines = 0
@@ -57,11 +57,11 @@ class TetrisGame:
         self.next_piece = self._new_piece()
 
     def _new_piece(self):
-        # Cada nova peca e escolhida aleatoriamente entre os sete formatos.
+        # Cada nova peça é escolhida aleatoriamente entre os sete formatos.
         return Piece(random.choice(list(SHAPES)))
 
     def _collides(self, piece, shape=None, x=None, y=None):
-        # Verifica se uma peca encosta nas paredes, no fundo ou em blocos ja fixados.
+        # Verifica se uma peça encosta nas paredes, no fundo ou em blocos já fixados.
         shape = shape or piece.shape
         x = piece.x if x is None else x
         y = piece.y if y is None else y
@@ -82,7 +82,7 @@ class TetrisGame:
         return False
 
     def move(self, dx, dy):
-        # Tenta mover a peca. Se ela nao puder descer, fixa no tabuleiro.
+        # Tenta mover a peça. Se ela não puder descer, fixa no tabuleiro.
         if self.game_over:
             return False
 
@@ -110,7 +110,7 @@ class TetrisGame:
         return self.move(0, 1)
 
     def rotate_piece(self):
-        # A peca O nao muda de formato ao girar, entao nao precisa rotacionar.
+        # A peça O não muda de formato ao girar, então não precisa rotacionar.
         if self.game_over or self.current_piece.kind == "O":
             return False
 
@@ -126,14 +126,14 @@ class TetrisGame:
         return False
 
     def hard_drop(self):
-        # Queda instantanea usada apenas no teclado para teste.
+        # Queda instantânea usada apenas no teclado para teste.
         if self.game_over:
             return
         while self.move_down():
             self.score += 1
 
     def landing_cells(self):
-        # Calcula onde a peca pararia se caisse direto na posicao atual.
+        # Calcula onde a peça pararia se caísse direto na posição atual.
         if self.game_over:
             return []
 
@@ -149,13 +149,13 @@ class TetrisGame:
         return cells
 
     def current_piece_columns(self):
-        # Colunas ocupadas pela peca atual, usadas no destaque visual do tabuleiro.
+        # Colunas ocupadas pela peça atual, usadas no destaque visual do tabuleiro.
         if self.game_over:
             return []
         return sorted({x for x, y in self.current_piece.cells if 0 <= x < BOARD_COLUMNS and y >= 0})
 
     def _lock_piece(self):
-        # Transfere os blocos da peca atual para o tabuleiro fixo.
+        # Transfere os blocos da peça atual para o tabuleiro fixo.
         for x, y in self.current_piece.cells:
             if y < 0:
                 self.game_over = True
@@ -164,19 +164,19 @@ class TetrisGame:
 
         cleared = self._clear_lines()
         if cleared:
-            # Pontuacao no estilo classico: limpar mais linhas de uma vez vale mais.
+            # Pontuação no estilo clássico: limpar mais linhas de uma vez vale mais.
             self.lines += cleared
             self.score += {1: 100, 2: 300, 3: 500, 4: 800}[cleared] * self.level
             self.level = 1 + self.lines // 10
 
-        # Depois de fixar, a proxima peca entra em jogo.
+        # Depois de fixar, a próxima peça entra em jogo.
         self.current_piece = self.next_piece
         self.next_piece = self._new_piece()
         if self._collides(self.current_piece):
             self.game_over = True
 
     def _clear_lines(self):
-        # Mantem apenas linhas incompletas e coloca linhas vazias no topo.
+        # Mantém apenas linhas incompletas e coloca linhas vazias no topo.
         remaining_rows = [row for row in self.board if any(cell is None for cell in row)]
         cleared = BOARD_ROWS - len(remaining_rows)
         new_rows = [[None for _ in range(BOARD_COLUMNS)] for _ in range(cleared)]
@@ -184,6 +184,6 @@ class TetrisGame:
         return cleared
 
     def update(self):
-        # Atualizacao chamada pelo loop principal para a queda automatica.
+        # Atualização chamada pelo loop principal para a queda automática.
         if not self.game_over:
             self.move_down()
